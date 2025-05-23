@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import Table from "../utility/Table.vue";
 import Timezone from "../timezone/Timezone.vue";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { shift } from "../../server/request";
 import Swal from "sweetalert2";
+import type { ShiftRecord } from "../../types/types";
 
 const currentTime = new Date();
 
@@ -11,23 +12,48 @@ const displayMonthYear = ref(
   currentTime.toLocaleString("default", { month: "long", year: "numeric" })
 );
 
-const handleSave = () => {
+const shiftRecord = ref<ShiftRecord[]>([]);
+
+const handleSave = (params: { start: string; end: string }) => {
   const saveShift = async () => {
     try {
-      const params = {};
-      const response = await shift("PUT", params);
-      if (response && response.status === 200) {
+      const response = await shift("POST", params);
+      console.log("Response:", response);
+      if (response && response.status >= 200 && response.status < 300) {
         Swal.fire({
-          title: `Shift saved successfully: ${response.data}`,
+          title: "Shift saved successfully",
           icon: "success",
           draggable: false,
         });
       }
     } catch (error) {
-      console.error("Error saving shift:", error);
+      Swal.fire({
+        title: `Error: ${error}`,
+        icon: "error",
+        draggable: false,
+      });
     }
   };
+  saveShift();
 };
+
+onMounted(() => {
+  const getShift = async () => {
+    try {
+      const response = await shift("GET");
+      if (response && response.status >= 200 && response.status < 300) {
+        shiftRecord.value = response.data;
+      }
+    } catch (error) {
+      Swal.fire({
+        title: `Error: ${error}`,
+        icon: "error",
+        draggable: false,
+      });
+    }
+  };
+  getShift();
+});
 </script>
 
 <template>
@@ -36,6 +62,10 @@ const handleSave = () => {
       <Timezone />
       <h1 class="text-2xl font-bold">{{ displayMonthYear }}</h1>
     </div>
-    <Table v-model="displayMonthYear" />
+    <Table
+      :saveFunction="handleSave"
+      :shiftRecord="shiftRecord"
+      v-model="displayMonthYear"
+    />
   </div>
 </template>

@@ -15,9 +15,10 @@ const activity = [
 const props = defineProps({
   date: String,
   closeModal: Function,
+  saveFunction: Function,
 });
 
-const selected = ref("");
+// const selected = ref("");
 const errorMessage = ref("");
 
 const formattedDate = (() => {
@@ -29,22 +30,25 @@ const formattedDate = (() => {
 })();
 
 const handleSave = () => {
-  if (!selected.value) {
-    errorMessage.value = "Please select an activity.";
-    return;
-  }
-  console.log("Selected activity:", selected.value);
+  // if (!selected.value) {
+  //   errorMessage.value = "Please select an activity.";
+  //   return;
+  // }
+  // console.log("Selected activity:", selected.value);
   const fromDate = new Date(`${formattedDate}T${defaultFrom.value}`);
   const toDate = new Date(`${formattedDate}T${defaultTo.value}`);
-  console.log("From:", fromDate.toISOString());
-  console.log("To:", toDate.toISOString());
+  const params = {
+    start: fromDate.toISOString(),
+    end: toDate.toISOString(),
+  };
+  props.saveFunction(params);
   errorMessage.value = "";
   props.closeModal();
 };
 </script>
 
 <template>
-  <div class="sm:w-180 xl:w-2/5 border bg-white p-4 rounded shadow-lg relative">
+  <div class="sm:w-200 xl:w-2/5 border bg-white p-4 rounded shadow-lg relative">
     <button
       @click="closeModal"
       class="absolute top-1 cursor-pointer right-2 text-gray-500"
@@ -52,7 +56,7 @@ const handleSave = () => {
       &times;
     </button>
     <h2 class="text-lg font-semibold mb-2">New Entry</h2>
-    <div class="mt-5 flex flex-col">
+    <!-- <div class="mt-5 flex flex-col">
       <div class="flex flex-row">
         <label for="date" class="mt-2">Activity: </label>
         <Dropdown
@@ -66,7 +70,7 @@ const handleSave = () => {
           {{ errorMessage }}
         </p>
       </div>
-    </div>
+    </div> -->
     <div class="mt-5">
       <label for="date" class=""
         >Date:
@@ -81,7 +85,7 @@ const handleSave = () => {
       <label for="from" class="">
         From:
         <input
-          class="border rounded px-2 py-2"
+          class="border w-32 rounded px-2 py-2"
           id="from"
           type="time"
           v-model="defaultFrom"

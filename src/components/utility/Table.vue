@@ -1,24 +1,19 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import Modal from "./Modal/Modal.vue";
+import type { ShiftRecord } from "../../types/types";
+import { calendarData } from "../../constant/constant";
 
-const props = defineProps({
-  monthYear: {
-    type: String,
+defineProps({
+  saveFunction: {
+    type: Function,
     required: true,
   },
+  shiftRecord: {
+    type: Array as () => ShiftRecord[],
+    required: false,
+  },
 });
-
-const weeks = 5;
-const days = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
 
 const currentYear = ref(new Date().getFullYear());
 const currentMonth = ref(new Date().getMonth());
@@ -38,7 +33,7 @@ const updateCalendarDays = () => {
   let firstDayOfMonth = new Date(year, month, 1).getDay();
   firstDayOfMonth = firstDayOfMonth === 0 ? 7 : firstDayOfMonth;
 
-  const totalCells = weeks * days.length;
+  const totalCells = calendarData.weeks * calendarData.days.length;
   const newCalendarDays = [];
 
   const startPrevMonthDay = daysPrevMonth - firstDayOfMonth + 2;
@@ -73,7 +68,7 @@ watch([currentYear, currentMonth], () => {
   updateCalendarDays();
 });
 
-const createEntry = (date: string) => {
+const createEntry = (date: string, edit: boolean = false) => {
   showModal.value = !showModal.value;
   selectedDate.value = date;
 };
@@ -117,7 +112,7 @@ watch(
     emit("update:modelValue", newMonthYear);
   },
   { immediate: true }
-); // immediate: true to run it once on initial setup
+);
 </script>
 
 <template>
@@ -169,7 +164,7 @@ watch(
       class="grid grid-cols-7 border border-gray-300 divide-x divide-gray-300"
     >
       <div
-        v-for="day in days"
+        v-for="day in calendarData.days"
         :key="day"
         class="text-center font-semibold py-2 bg-gray-50"
       >
@@ -194,12 +189,19 @@ watch(
         ]"
       >
         <div class="font-bold">{{ day.date.getDate() }}</div>
-        <div
-          @click="() => createEntry(day.date)"
-          class="border border-gray-400 text-sm cursor-pointer mt-2 text-center py-1 rounded hover:bg-blue-100"
-        >
-          Marvin Villamar - [Duration]
-        </div>
+        <template v-for="record in shiftRecord">
+          <div
+            v-if="
+              new Date(record.start).getFullYear() === day.date.getFullYear() &&
+              new Date(record.start).getMonth() === day.date.getMonth() &&
+              new Date(record.start).getDate() === day.date.getDate()
+            "
+            @click="() => createEntry(day.date)"
+            class="border border-gray-400 text-sm cursor-pointer mt-2 text-center py-1 rounded hover:bg-blue-100"
+          >
+            Marvin Villamar - {{ `[${record.duration}hrs]` }}
+          </div>
+        </template>
         <div
           @click="() => createEntry(day.date)"
           class="border border-gray-400 text-sm cursor-pointer mt-2 text-center py-1 rounded hover:bg-blue-100"
@@ -214,6 +216,10 @@ watch(
     v-if="showModal"
     class="fixed inset-0 flex items-center justify-center backdrop-blur-xs"
   >
-    <Modal :date="selectedDate" :closeModal="createEntry" />
+    <Modal
+      :date="selectedDate"
+      :closeModal="createEntry"
+      :saveFunction="saveFunction"
+    />
   </div>
 </template>
