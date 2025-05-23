@@ -6,21 +6,18 @@ import * as request from "../../../src/server/request";
 import Swal from "sweetalert2";
 import { AxiosResponse } from "axios";
 
-// Mock sweetalert2
 vi.mock("sweetalert2", () => ({
   default: {
     fire: vi.fn(),
   },
 }));
 
-// Mock the request module
 vi.mock("../../../src/server/request", () => ({
   timezone: vi.fn(),
 }));
 
 describe("Timezone.vue", () => {
   beforeEach(() => {
-    // Reset mocks before each test
     vi.clearAllMocks();
   });
 
@@ -36,21 +33,15 @@ describe("Timezone.vue", () => {
     const wrapper = mount(Timezone, {
       global: {
         stubs: {
-          Dropdown: true, // Stub Dropdown component
+          Dropdown: true,
         },
       },
     });
 
-    // Wait for onMounted to complete
-    await new Promise((resolve) => setTimeout(resolve, 0)); // Await next tick
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
-    // Check if the component renders
     expect(wrapper.exists()).toBe(true);
-
-    // Verify Dropdown is rendered
     expect(wrapper.findComponent(Dropdown).exists()).toBe(true);
-
-    // Verify Save button is present
     expect(wrapper.find("button").text()).toBe("Save");
   });
 
@@ -59,9 +50,9 @@ describe("Timezone.vue", () => {
     vi.mocked(request.timezone).mockResolvedValueOnce({
       status: 200,
       data: mockTimezone,
-      statusText: "OK", // Add this
-      headers: {}, // Add this (can be an empty object)
-      config: {}, // Add this (can be an empty object)
+      statusText: "OK",
+      headers: {},
+      config: {},
     } as AxiosResponse);
 
     const wrapper = mount(Timezone, {
@@ -72,22 +63,19 @@ describe("Timezone.vue", () => {
       },
     });
 
-    // Wait for the onMounted hook to execute and the async operation to complete
-    await new Promise((resolve) => setTimeout(resolve, 0)); // Await next tick
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
-    // Access the exposed defaultTimezone ref
     expect(wrapper.vm.defaultTimezone).toBe(mockTimezone);
     expect(request.timezone).toHaveBeenCalledWith("GET");
   });
 
   it("displays error message if no timezone is selected on save", async () => {
-    // Mock initial GET request
     vi.mocked(request.timezone).mockResolvedValueOnce({
       status: 200,
       data: "",
-      statusText: "OK", // Add this
-      headers: {}, // Add this (can be an empty object)
-      config: {}, // Add this (can be an empty object)
+      statusText: "OK",
+      headers: {},
+      config: {},
     } as AxiosResponse);
 
     const wrapper = mount(Timezone, {
@@ -98,13 +86,9 @@ describe("Timezone.vue", () => {
       },
     });
 
-    // Wait for onMounted
     await new Promise((resolve) => setTimeout(resolve, 0));
-
-    // Simulate clicking the save button without selecting a timezone
     await wrapper.find("button").trigger("click");
 
-    // Check if the error message is displayed
     expect(wrapper.find(".text-red-500").exists()).toBe(true);
     expect(wrapper.find(".text-red-500").text()).toBe(
       "Please select a timezone."
@@ -112,7 +96,7 @@ describe("Timezone.vue", () => {
     expect(request.timezone).not.toHaveBeenCalledWith(
       "PUT",
       expect.any(Object)
-    ); // Ensure PUT request was not made
+    );
   });
 
   it("saves the selected timezone successfully", async () => {
@@ -121,17 +105,17 @@ describe("Timezone.vue", () => {
       .mockResolvedValueOnce({
         status: 200,
         data: "",
-        statusText: "OK", // Add this
-        headers: {}, // Add this (can be an empty object)
-        config: {}, // Add this (can be an empty object)
-      } as AxiosResponse) // Mock initial GET
+        statusText: "OK",
+        headers: {},
+        config: {},
+      } as AxiosResponse)
       .mockResolvedValueOnce({
         status: 200,
         data: selectedTimezone,
-        statusText: "OK", // Add this
-        headers: {}, // Add this (can be an empty object)
-        config: {}, // Add this (can be an empty object)
-      } as AxiosResponse); // Mock PUT success
+        statusText: "OK",
+        headers: {},
+        config: {},
+      } as AxiosResponse);
 
     const wrapper = mount(Timezone, {
       global: {
@@ -146,37 +130,28 @@ describe("Timezone.vue", () => {
       },
     });
 
-    // Wait for onMounted
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    // Simulate selecting a timezone from the dropdown
-    // Since Dropdown is a stub, we need to manually update the v-model
     await wrapper
       .findComponent(Dropdown)
       .vm.$emit("update:modelValue", selectedTimezone);
-    await wrapper.vm.$nextTick(); // Wait for Vue to react to the v-model update
+    await wrapper.vm.$nextTick();
 
     expect(wrapper.vm.defaultTimezone).toBe(selectedTimezone);
 
-    // Simulate clicking the save button
     await wrapper.find("button").trigger("click");
-
-    // Wait for the async save operation to complete
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    // Verify the PUT request was made with the correct data
     expect(request.timezone).toHaveBeenCalledWith("PUT", {
       timezone: selectedTimezone,
     });
 
-    // Verify Swal.fire was called on success
     expect(Swal.fire).toHaveBeenCalledWith({
       title: `Timezone saved successfully: ${selectedTimezone}`,
       icon: "success",
       draggable: false,
     });
 
-    // Check if error message is no longer visible
     expect(wrapper.find(".text-red-500").exists()).toBe(false);
   });
 
@@ -186,11 +161,11 @@ describe("Timezone.vue", () => {
       .mockResolvedValueOnce({
         status: 200,
         data: "",
-        statusText: "OK", // Add this
-        headers: {}, // Add this (can be an empty object)
-        config: {}, // Add this (can be an empty object)
-      } as AxiosResponse) // Mock initial GET
-      .mockRejectedValueOnce(new Error("Network error")); // Mock PUT failure
+        statusText: "OK",
+        headers: {},
+        config: {},
+      } as AxiosResponse)
+      .mockRejectedValueOnce(new Error("Network error"));
 
     const wrapper = mount(Timezone, {
       global: {
@@ -205,30 +180,21 @@ describe("Timezone.vue", () => {
       },
     });
 
-    // Wait for onMounted
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    // Simulate selecting a timezone
     await wrapper
       .findComponent(Dropdown)
       .vm.$emit("update:modelValue", selectedTimezone);
     await wrapper.vm.$nextTick();
 
-    // Simulate clicking the save button
     await wrapper.find("button").trigger("click");
-
-    // Wait for the async save operation to complete
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    // Verify the PUT request was attempted
     expect(request.timezone).toHaveBeenCalledWith("PUT", {
       timezone: selectedTimezone,
     });
 
-    // Verify Swal.fire was NOT called
     expect(Swal.fire).not.toHaveBeenCalled();
-
-    // Check if the error message is displayed
     expect(wrapper.find(".text-red-500").exists()).toBe(true);
     expect(wrapper.find(".text-red-500").text()).toBe("Error saving timezone.");
   });
@@ -248,18 +214,14 @@ describe("Timezone.vue", () => {
       },
     });
 
-    // Wait for the onMounted hook to execute and the async operation to complete
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    // Verify that defaultTimezone remains empty
     expect(wrapper.vm.defaultTimezone).toBe("");
-
-    // Verify that the error was logged
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       "Error fetching timezone:",
       expect.any(Error)
     );
 
-    consoleErrorSpy.mockRestore(); // Restore console.error
+    consoleErrorSpy.mockRestore();
   });
 });
