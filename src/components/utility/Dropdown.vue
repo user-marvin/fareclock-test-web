@@ -27,7 +27,7 @@ function onFocus() {
   dropdownOpen.value = true;
 }
 
-function onBlur(e: FocusEvent) {
+function onBlur(_: FocusEvent) {
   setTimeout(() => {
     dropdownOpen.value = false;
   }, 150);

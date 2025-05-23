@@ -28,7 +28,6 @@ const mockedShift = request.shift as MockInstance;
 
 describe("Shift.vue", () => {
   beforeEach(() => {
-    // Clear all mocks and reset implementations before each test
     vi.clearAllMocks();
     mockedShift.mockReset();
     mockedSwalFire.mockReset();
@@ -103,7 +102,17 @@ describe("Shift.vue", () => {
 
   it("handles error during initial getShift fetch", async () => {
     const errorMessage = "Failed to fetch shifts";
-    mockedShift.mockRejectedValueOnce(errorMessage);
+    mockedShift.mockRejectedValueOnce({
+      response: {
+        data: {
+          message: errorMessage,
+        },
+        status: 400,
+        statusText: "Bad Request",
+        headers: {},
+        config: {},
+      },
+    });
 
     const wrapper = mount(Shift, {
       global: {
@@ -179,7 +188,17 @@ describe("Shift.vue", () => {
       };
       const errorMessage = "Failed to save shift";
 
-      mockedShift.mockRejectedValueOnce(errorMessage);
+      mockedShift.mockRejectedValueOnce({
+        response: {
+          data: {
+            message: errorMessage,
+          },
+          status: 400,
+          statusText: "Bad Request",
+          headers: {},
+          config: {},
+        },
+      });
 
       const wrapper = mount(Shift, {
         global: { stubs: { Timezone: true, Table: true } },
@@ -257,7 +276,17 @@ describe("Shift.vue", () => {
       };
       const errorMessage = "Failed to update shift";
 
-      mockedShift.mockRejectedValueOnce(errorMessage);
+      mockedShift.mockRejectedValueOnce({
+        response: {
+          data: {
+            message: errorMessage,
+          },
+          status: 400,
+          statusText: "Bad Request",
+          headers: {},
+          config: {},
+        },
+      });
 
       const wrapper = mount(Shift, {
         global: { stubs: { Timezone: true, Table: true } },
@@ -325,7 +354,17 @@ describe("Shift.vue", () => {
       const shiftToDeleteId = 1;
       const errorMessage = "Failed to delete shift";
 
-      mockedShift.mockRejectedValueOnce(errorMessage);
+      mockedShift.mockRejectedValueOnce({
+        response: {
+          data: {
+            message: errorMessage,
+          },
+          status: 400,
+          statusText: "Bad Request",
+          headers: {},
+          config: {},
+        },
+      });
 
       const wrapper = mount(Shift, {
         global: { stubs: { Timezone: true, Table: true } },

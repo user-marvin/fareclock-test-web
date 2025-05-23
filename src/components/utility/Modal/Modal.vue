@@ -8,7 +8,7 @@ const props = defineProps({
     required: false,
   },
   date: {
-    type: String,
+    type: [Date, null] as unknown as () => Date | null,
     required: true,
   },
   closeModal: {
@@ -46,7 +46,15 @@ const formatDate = (date: string) => {
 
 const defaultFrom = ref(getFormattedTime(props.selectedShift?.start, "09:00"));
 const defaultTo = ref(getFormattedTime(props.selectedShift?.end, "17:00"));
-const defaultDate = ref(formatDate(props.selectedShift?.start || props.date));
+const defaultDate = ref(
+  formatDate(
+    typeof (props.selectedShift?.start || props.date) === "string"
+      ? ((props.selectedShift?.start || props.date) as string)
+      : (props.selectedShift?.start || props.date) instanceof Date
+      ? ((props.selectedShift?.start || props.date) as Date).toISOString()
+      : ""
+  )
+);
 
 const handleSave = () => {
   const fromDate = new Date(`${defaultDate.value}T${defaultFrom.value}`);

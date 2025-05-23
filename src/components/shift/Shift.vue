@@ -17,7 +17,6 @@ const shiftRecord = ref<ShiftRecord[]>([]);
 const handleSave = (params: { start: string; end: string }, id?: number) => {
   const saveShift = async () => {
     try {
-      console.log("id", id);
       let response: any = {};
       if (id) {
         response = await shift("PUT", params, id);
@@ -32,9 +31,9 @@ const handleSave = (params: { start: string; end: string }, id?: number) => {
         });
         getShift();
       }
-    } catch (error) {
+    } catch (error: any) {
       Swal.fire({
-        title: `Error: ${error}`,
+        title: `Error: ${error.response?.data?.message}`,
         icon: "error",
         draggable: false,
       });
@@ -49,9 +48,9 @@ const getShift = async () => {
     if (response && response.status >= 200 && response.status < 300) {
       shiftRecord.value = response.data;
     }
-  } catch (error) {
+  } catch (error: any) {
     Swal.fire({
-      title: `Error: ${error}`,
+      title: `Error: ${error.response?.data?.message}`,
       icon: "error",
       draggable: false,
     });
@@ -69,9 +68,9 @@ const deleteShift = async (id: number) => {
       });
       getShift();
     }
-  } catch (error) {
+  } catch (error: any) {
     Swal.fire({
-      title: `Error: ${error}`,
+      title: `Error: ${error.response?.data?.message}`,
       icon: "error",
       draggable: false,
     });

@@ -93,25 +93,28 @@ const createEntry = (date: Date, selectedShift: ShiftRecord | null = null) => {
 
 const nextMonth = () => {
   if (state.currentMonth === 11) {
-    // If it's December, go to next year, January
     state.currentMonth = 0;
     state.currentYear++;
   } else {
-    // Otherwise, just increment the month
     state.currentMonth++;
   }
 };
 
 const prevMonth = () => {
   if (state.currentMonth === 0) {
-    // If it's January, go to previous year, December
     state.currentMonth = 11;
     state.currentYear--;
   } else {
-    // Otherwise, just decrement the month
     state.currentMonth--;
   }
-  console.log(state.currentMonth);
+};
+const isToday = (date: Date) => {
+  const today = new Date();
+  return (
+    date.getFullYear() === today.getFullYear() &&
+    date.getMonth() === today.getMonth() &&
+    date.getDate() === today.getDate()
+  );
 };
 
 const emit = defineEmits<{
@@ -199,7 +202,9 @@ watch(
         :key="index"
         class="h-40 p-2"
         :class="[
-          index % 7 === 5 || index % 7 === 6
+          isToday(day.date)
+            ? 'bg-blue-100'
+            : index % 7 === 5 || index % 7 === 6
             ? 'bg-red-100'
             : day.current
             ? 'bg-white'
@@ -208,20 +213,37 @@ watch(
         ]"
       >
         <div class="font-bold">{{ day.date.getDate() }}</div>
-        <template v-for="record in shiftRecord">
+        <div
+          v-if="
+            shiftRecord &&
+            shiftRecord.some(
+              (record) =>
+                new Date(record.start).getFullYear() ===
+                  day.date.getFullYear() &&
+                new Date(record.start).getMonth() === day.date.getMonth() &&
+                new Date(record.start).getDate() === day.date.getDate()
+            )
+          "
+        >
           <div
-            v-if="
-              new Date(record.start).getFullYear() === day.date.getFullYear() &&
-              new Date(record.start).getMonth() === day.date.getMonth() &&
-              new Date(record.start).getDate() === day.date.getDate()
-            "
+            v-for="record in shiftRecord
+              .filter(
+                (record) =>
+                  new Date(record.start).getFullYear() ===
+                    day.date.getFullYear() &&
+                  new Date(record.start).getMonth() === day.date.getMonth() &&
+                  new Date(record.start).getDate() === day.date.getDate()
+              )
+              .slice(0, 1)"
+            :key="record.id"
             @click="() => createEntry(day.date, record)"
             class="named-attendance border border-gray-400 text-sm cursor-pointer mt-2 text-center py-1 rounded hover:bg-blue-100"
           >
             Marvin Villamar - {{ `[${record.duration}hrs]` }}
           </div>
-        </template>
+        </div>
         <div
+          v-else
           @click="() => createEntry(day.date)"
           class="new-attendance border border-gray-400 text-sm cursor-pointer mt-2 text-center py-1 rounded hover:bg-blue-100"
         >
@@ -236,7 +258,7 @@ watch(
     class="fixed inset-0 flex items-center justify-center backdrop-blur-xs"
   >
     <Modal
-      :selectedShift="state.selectedShift"
+      :selectedShift="state.selectedShift ?? undefined"
       :date="state.selectedDate"
       :closeModal="createEntry"
       :saveFunction="saveFunction"
