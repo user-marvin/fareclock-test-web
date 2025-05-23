@@ -21,16 +21,12 @@ export const shift = (
   switch (action) {
     case "GET":
       return api.get(root, data);
-      break;
     case "PUT":
       return api.put(`${root}/${id}`, data);
-      break;
     case "DELETE":
       return api.delete(`${root}/${id}`, data);
-      break;
     case "POST":
       return api.post(root, data);
-      break;
     default:
       break;
   }

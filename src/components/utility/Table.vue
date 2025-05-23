@@ -1,8 +1,16 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { reactive, watch } from "vue";
 import Modal from "./Modal/Modal.vue";
 import type { ShiftRecord } from "../../types/types";
 import { calendarData } from "../../constant/constant";
+interface TableState {
+  currentYear: number;
+  currentMonth: number;
+  calendarDays: { date: Date; current: boolean }[];
+  showModal: boolean;
+  selectedDate: Date | null;
+  selectedShift: ShiftRecord | null;
+}
 
 defineProps({
   saveFunction: {
@@ -13,19 +21,24 @@ defineProps({
     type: Array as () => ShiftRecord[],
     required: false,
   },
+  deleteShift: {
+    type: Function,
+    required: true,
+  },
 });
 
-const currentYear = ref(new Date().getFullYear());
-const currentMonth = ref(new Date().getMonth());
-
-const calendarDays = ref<any>([]);
-
-const showModal = ref(false);
-const selectedDate = ref<string | null>(null);
+const state = reactive<TableState>({
+  currentYear: new Date().getFullYear(),
+  currentMonth: new Date().getMonth(),
+  calendarDays: [],
+  showModal: false,
+  selectedDate: null,
+  selectedShift: null,
+});
 
 const updateCalendarDays = () => {
-  const year = currentYear.value;
-  const month = currentMonth.value;
+  const year = state.currentYear;
+  const month = state.currentMonth;
 
   const daysPrevMonth = new Date(year, month, 0).getDate();
   const daysPresentMonth = new Date(year, month + 1, 0).getDate();
@@ -59,40 +72,46 @@ const updateCalendarDays = () => {
     });
   }
 
-  calendarDays.value = newCalendarDays;
+  state.calendarDays = newCalendarDays;
 };
 
 updateCalendarDays();
 
-watch([currentYear, currentMonth], () => {
-  updateCalendarDays();
-});
+watch(
+  [() => state.currentYear, () => state.currentMonth],
+  () => {
+    updateCalendarDays();
+  },
+  { deep: true }
+);
 
-const createEntry = (date: string, edit: boolean = false) => {
-  showModal.value = !showModal.value;
-  selectedDate.value = date;
+const createEntry = (date: Date, selectedShift: ShiftRecord | null = null) => {
+  state.showModal = !state.showModal;
+  state.selectedDate = date;
+  state.selectedShift = selectedShift;
 };
 
 const nextMonth = () => {
-  if (currentMonth.value === 11) {
+  if (state.currentMonth === 11) {
     // If it's December, go to next year, January
-    currentMonth.value = 0;
-    currentYear.value++;
+    state.currentMonth = 0;
+    state.currentYear++;
   } else {
     // Otherwise, just increment the month
-    currentMonth.value++;
+    state.currentMonth++;
   }
 };
 
 const prevMonth = () => {
-  if (currentMonth.value === 0) {
+  if (state.currentMonth === 0) {
     // If it's January, go to previous year, December
-    currentMonth.value = 11;
-    currentYear.value--;
+    state.currentMonth = 11;
+    state.currentYear--;
   } else {
     // Otherwise, just decrement the month
-    currentMonth.value--;
+    state.currentMonth--;
   }
+  console.log(state.currentMonth);
 };
 
 const emit = defineEmits<{
@@ -100,11 +119,11 @@ const emit = defineEmits<{
 }>();
 
 watch(
-  [currentYear, currentMonth],
+  () => [state.currentYear, state.currentMonth],
   () => {
     const newMonthYear = new Date(
-      currentYear.value,
-      currentMonth.value
+      state.currentYear,
+      state.currentMonth
     ).toLocaleString("en-US", {
       month: "long",
       year: "numeric",
@@ -176,7 +195,7 @@ watch(
       class="grid grid-cols-7 border border-t-0 border-gray-300 divide-x divide-y divide-gray-300"
     >
       <div
-        v-for="(day, index) in calendarDays"
+        v-for="(day, index) in state.calendarDays"
         :key="index"
         class="h-40 p-2"
         :class="[
@@ -196,7 +215,7 @@ watch(
               new Date(record.start).getMonth() === day.date.getMonth() &&
               new Date(record.start).getDate() === day.date.getDate()
             "
-            @click="() => createEntry(day.date)"
+            @click="() => createEntry(day.date, record)"
             class="border border-gray-400 text-sm cursor-pointer mt-2 text-center py-1 rounded hover:bg-blue-100"
           >
             Marvin Villamar - {{ `[${record.duration}hrs]` }}
@@ -206,20 +225,22 @@ watch(
           @click="() => createEntry(day.date)"
           class="border border-gray-400 text-sm cursor-pointer mt-2 text-center py-1 rounded hover:bg-blue-100"
         >
-          New Entry
+          New Attendance
         </div>
       </div>
     </div>
   </div>
 
   <div
-    v-if="showModal"
+    v-if="state.showModal"
     class="fixed inset-0 flex items-center justify-center backdrop-blur-xs"
   >
     <Modal
-      :date="selectedDate"
+      :selectedShift="state.selectedShift"
+      :date="state.selectedDate"
       :closeModal="createEntry"
       :saveFunction="saveFunction"
+      :deleteShift="deleteShift"
     />
   </div>
 </template>

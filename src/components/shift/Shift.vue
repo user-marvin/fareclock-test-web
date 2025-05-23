@@ -14,17 +14,23 @@ const displayMonthYear = ref(
 
 const shiftRecord = ref<ShiftRecord[]>([]);
 
-const handleSave = (params: { start: string; end: string }) => {
+const handleSave = (params: { start: string; end: string }, id?: number) => {
   const saveShift = async () => {
     try {
-      const response = await shift("POST", params);
-      console.log("Response:", response);
+      console.log("id", id);
+      let response: any = {};
+      if (id) {
+        response = await shift("PUT", params, id);
+      } else {
+        response = await shift("POST", params);
+      }
       if (response && response.status >= 200 && response.status < 300) {
         Swal.fire({
-          title: "Shift saved successfully",
+          title: `Shift ${id ? "updated" : "saved"} successfully`,
           icon: "success",
           draggable: false,
         });
+        getShift();
       }
     } catch (error) {
       Swal.fire({
@@ -37,21 +43,42 @@ const handleSave = (params: { start: string; end: string }) => {
   saveShift();
 };
 
-onMounted(() => {
-  const getShift = async () => {
-    try {
-      const response = await shift("GET");
-      if (response && response.status >= 200 && response.status < 300) {
-        shiftRecord.value = response.data;
-      }
-    } catch (error) {
+const getShift = async () => {
+  try {
+    const response = await shift("GET");
+    if (response && response.status >= 200 && response.status < 300) {
+      shiftRecord.value = response.data;
+    }
+  } catch (error) {
+    Swal.fire({
+      title: `Error: ${error}`,
+      icon: "error",
+      draggable: false,
+    });
+  }
+};
+
+const deleteShift = async (id: number) => {
+  try {
+    const response = await shift("DELETE", {}, id);
+    if (response && response.status >= 200 && response.status < 300) {
       Swal.fire({
-        title: `Error: ${error}`,
-        icon: "error",
+        title: `Shift deleted successfully`,
+        icon: "success",
         draggable: false,
       });
+      getShift();
     }
-  };
+  } catch (error) {
+    Swal.fire({
+      title: `Error: ${error}`,
+      icon: "error",
+      draggable: false,
+    });
+  }
+};
+
+onMounted(() => {
   getShift();
 });
 </script>
@@ -66,6 +93,7 @@ onMounted(() => {
       :saveFunction="handleSave"
       :shiftRecord="shiftRecord"
       v-model="displayMonthYear"
+      :deleteShift="deleteShift"
     />
   </div>
 </template>

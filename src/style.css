@@ -38,6 +38,13 @@ body {
   scrollbar-color: #cbd5e1 transparent;
 }
 
+input[type="date"],
+input[type="time"] {
+  -webkit-appearance: auto; /* Re-enable native appearance */
+  -moz-appearance: auto;
+  appearance: auto;
+}
+
 #app {
   padding: 2rem;
   margin: 0 auto;
