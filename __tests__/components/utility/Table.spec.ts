@@ -6,6 +6,7 @@ import {
   vi,
   beforeEach,
   type MockInstance,
+  afterEach,
 } from "vitest";
 import Table from "../../../src/components/utility/Table.vue";
 import Modal from "../../../src/components/utility/Modal/Modal.vue";
@@ -23,8 +24,8 @@ vi.useFakeTimers();
 
 describe("Table.vue", () => {
   let wrapper: ReturnType<typeof mount>;
-  let mockedSaveFunction: MockInstance<SaveFunction>;
-  let mockedDeleteShift: MockInstance<DeleteShiftFunction>;
+  let mockedSaveFunction: MockInstance;
+  let mockedDeleteShift: MockInstance;
 
   type TableVm = InstanceType<typeof Table> & {
     state: {
@@ -50,9 +51,9 @@ describe("Table.vue", () => {
 
     wrapper = mount(Table, {
       props: {
-        saveFunction: mockedSaveFunction,
+        saveFunction: mockedSaveFunction as unknown as SaveFunction,
         shiftRecord: [],
-        deleteShift: mockedDeleteShift,
+        deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
       },
       global: {
         stubs: {
@@ -169,9 +170,9 @@ describe("Table.vue", () => {
 
       wrapper = mount(Table, {
         props: {
-          saveFunction: mockedSaveFunction,
+          saveFunction: mockedSaveFunction as unknown as SaveFunction,
           shiftRecord: mockShiftRecords,
-          deleteShift: mockedDeleteShift,
+          deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
         },
         global: {
           stubs: {
@@ -240,9 +241,9 @@ describe("Table.vue", () => {
 
     wrapper = mount(Table, {
       props: {
-        saveFunction: mockedSaveFunction,
+        saveFunction: mockedSaveFunction as unknown as SaveFunction,
         shiftRecord: mockShiftRecords,
-        deleteShift: mockedDeleteShift,
+        deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
       },
       global: {
         stubs: {
