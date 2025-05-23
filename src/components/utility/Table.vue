@@ -216,14 +216,14 @@ watch(
               new Date(record.start).getDate() === day.date.getDate()
             "
             @click="() => createEntry(day.date, record)"
-            class="border border-gray-400 text-sm cursor-pointer mt-2 text-center py-1 rounded hover:bg-blue-100"
+            class="named-attendance border border-gray-400 text-sm cursor-pointer mt-2 text-center py-1 rounded hover:bg-blue-100"
           >
             Marvin Villamar - {{ `[${record.duration}hrs]` }}
           </div>
         </template>
         <div
           @click="() => createEntry(day.date)"
-          class="border border-gray-400 text-sm cursor-pointer mt-2 text-center py-1 rounded hover:bg-blue-100"
+          class="new-attendance border border-gray-400 text-sm cursor-pointer mt-2 text-center py-1 rounded hover:bg-blue-100"
         >
           New Attendance
         </div>

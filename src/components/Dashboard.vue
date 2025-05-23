@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import Shift from './shift/Shift.vue';
-
+import Shift from "./shift/Shift.vue";
 </script>
 
 <template>

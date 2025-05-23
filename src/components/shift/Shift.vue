@@ -2,9 +2,9 @@
 import Table from "../utility/Table.vue";
 import Timezone from "../timezone/Timezone.vue";
 import { onMounted, ref } from "vue";
-import { shift } from "../../server/request";
 import Swal from "sweetalert2";
 import type { ShiftRecord } from "../../types/types";
+import { shift } from "../../server/request";
 
 const currentTime = new Date();
 
@@ -80,6 +80,13 @@ const deleteShift = async (id: number) => {
 
 onMounted(() => {
   getShift();
+});
+
+defineExpose({
+  displayMonthYear,
+  shiftRecord,
+  handleSave,
+  deleteShift,
 });
 </script>
 

@@ -45,7 +45,6 @@ const handleSave = () => {
           icon: "success",
           draggable: false,
         });
-      } else {
       }
     } catch (error) {
       errorMessage.value = "Error saving timezone.";
@@ -67,6 +66,10 @@ onMounted(() => {
   };
 
   getTimezone();
+});
+defineExpose({
+  defaultTimezone,
+  errorMessage,
 });
 </script>
 
