@@ -13,10 +13,8 @@ describe("Index.vue", () => {
       },
     });
 
-    // Assert that the Dashboard component itself is rendered
     expect(wrapper.exists()).toBe(true);
 
-    // Assert that the Shift component is rendered
     expect(wrapper.findComponent(Shift).exists()).toBe(true);
   });
 });
