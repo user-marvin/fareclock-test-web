@@ -53,7 +53,7 @@ describe("Modal.vue", () => {
   it("`getFormattedTime` correctly extracts time or returns default", () => {
     const wrapper = mount(Modal, {
       props: {
-        date: MOCK_DATE_STR,
+        date: new Date(MOCK_DATE_STR),
         closeModal: mockedCloseModal as unknown as CloseModalFunction,
         saveFunction: mockedSaveFunction as unknown as SaveFunction,
         deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
@@ -76,7 +76,7 @@ describe("Modal.vue", () => {
   it("`formatDate` correctly formats date to YYYY-MM-DD", () => {
     const wrapper = mount(Modal, {
       props: {
-        date: MOCK_DATE_STR,
+        date: new Date(MOCK_DATE_STR),
         closeModal: mockedCloseModal as unknown as CloseModalFunction,
         saveFunction: mockedSaveFunction as unknown as SaveFunction,
         deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
@@ -96,7 +96,7 @@ describe("Modal.vue", () => {
     beforeEach(() => {
       wrapper = mount(Modal, {
         props: {
-          date: MOCK_DATE_STR,
+          date: new Date(MOCK_DATE_STR),
           closeModal: mockedCloseModal as unknown as CloseModalFunction,
           saveFunction: mockedSaveFunction as unknown as SaveFunction,
           deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
@@ -136,7 +136,7 @@ describe("Modal.vue", () => {
       wrapper = mount(Modal, {
         props: {
           selectedShift: mockShift,
-          date: MOCK_DATE_STR,
+          date: new Date(MOCK_DATE_STR),
           closeModal: mockedCloseModal as unknown as CloseModalFunction,
           saveFunction: mockedSaveFunction as unknown as SaveFunction,
           deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
@@ -163,7 +163,7 @@ describe("Modal.vue", () => {
     it("calls closeModal prop when 'x' button is clicked", async () => {
       const wrapper = mount(Modal, {
         props: {
-          date: MOCK_DATE_STR,
+          date: new Date(MOCK_DATE_STR),
           closeModal: mockedCloseModal as unknown as CloseModalFunction,
           saveFunction: mockedSaveFunction as unknown as SaveFunction,
           deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
@@ -177,7 +177,7 @@ describe("Modal.vue", () => {
     it("calls closeModal prop when 'Close' button is clicked", async () => {
       const wrapper = mount(Modal, {
         props: {
-          date: MOCK_DATE_STR,
+          date: new Date(MOCK_DATE_STR),
           closeModal: mockedCloseModal as unknown as CloseModalFunction,
           saveFunction: mockedSaveFunction as unknown as SaveFunction,
           deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
@@ -196,7 +196,7 @@ describe("Modal.vue", () => {
     it("calls saveFunction and closeModal for new attendance", async () => {
       const wrapper = mount(Modal, {
         props: {
-          date: MOCK_DATE_STR,
+          date: new Date(MOCK_DATE_STR),
           closeModal: mockedCloseModal as unknown as CloseModalFunction,
           saveFunction: mockedSaveFunction as unknown as SaveFunction,
           deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
@@ -237,7 +237,7 @@ describe("Modal.vue", () => {
       const wrapper = mount(Modal, {
         props: {
           selectedShift: mockShift,
-          date: MOCK_DATE_STR,
+          date: new Date(MOCK_DATE_STR),
           closeModal: mockedCloseModal as unknown as CloseModalFunction,
           saveFunction: mockedSaveFunction as unknown as SaveFunction,
           deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
@@ -280,7 +280,7 @@ describe("Modal.vue", () => {
       const wrapper = mount(Modal, {
         props: {
           selectedShift: mockShift,
-          date: MOCK_DATE_STR,
+          date: new Date(MOCK_DATE_STR),
           closeModal: mockedCloseModal as unknown as CloseModalFunction,
           saveFunction: mockedSaveFunction as unknown as SaveFunction,
           deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
@@ -307,7 +307,7 @@ describe("Modal.vue", () => {
       const wrapper = mount(Modal, {
         props: {
           selectedShift: mockShift,
-          date: MOCK_DATE_STR,
+          date: new Date(MOCK_DATE_STR),
           closeModal: mockedCloseModal as unknown as CloseModalFunction,
           saveFunction: mockedSaveFunction as unknown as SaveFunction,
           deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
@@ -327,7 +327,7 @@ describe("Modal.vue", () => {
     it("does not call deleteShift if selectedShift is null (should be hidden anyway)", async () => {
       const wrapper = mount(Modal, {
         props: {
-          date: MOCK_DATE_STR,
+          date: new Date(MOCK_DATE_STR),
           closeModal: mockedCloseModal as unknown as CloseModalFunction,
           saveFunction: mockedSaveFunction as unknown as SaveFunction,
           deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
@@ -347,7 +347,7 @@ describe("Modal.vue", () => {
   it("updates defaultFrom and defaultTo when input fields are changed", async () => {
     const wrapper = mount(Modal, {
       props: {
-        date: MOCK_DATE_STR,
+        date: new Date(MOCK_DATE_STR),
         closeModal: mockedCloseModal as unknown as CloseModalFunction,
         saveFunction: mockedSaveFunction as unknown as SaveFunction,
         deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
@@ -368,7 +368,7 @@ describe("Modal.vue", () => {
   it("updates defaultDate when date input field is changed", async () => {
     const wrapper = mount(Modal, {
       props: {
-        date: MOCK_DATE_STR,
+        date: new Date(MOCK_DATE_STR),
         closeModal: mockedCloseModal as unknown as CloseModalFunction,
         saveFunction: mockedSaveFunction as unknown as SaveFunction,
         deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,

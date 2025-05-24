@@ -8,7 +8,7 @@ interface TableState {
   currentMonth: number;
   calendarDays: { date: Date; current: boolean }[];
   showModal: boolean;
-  selectedDate: Date | null;
+  selectedDate: Date;
   selectedShift: ShiftRecord | null;
 }
 
@@ -32,7 +32,7 @@ const state = reactive<TableState>({
   currentMonth: new Date().getMonth(),
   calendarDays: [],
   showModal: false,
-  selectedDate: null,
+  selectedDate: new Date(),
   selectedShift: null,
 });
 

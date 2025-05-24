@@ -155,7 +155,9 @@ describe("Table.vue", () => {
       expect(wrapper.findComponent(Modal).props().date).toEqual(
         vm.state.selectedDate
       );
-      expect(wrapper.findComponent(Modal).props().selectedShift).toBeNull();
+      expect(
+        wrapper.findComponent(Modal).props().selectedShift
+      ).toBeUndefined();
     });
 
     it("opens modal with correct shift data when an existing shift is clicked", async () => {

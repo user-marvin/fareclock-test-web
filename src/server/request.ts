@@ -15,7 +15,7 @@ export const timezone = (action: "GET" | "PUT", data?: any) => {
 export const shift = (
   action: "GET" | "PUT" | "DELETE" | "POST",
   data?: any,
-  id?: number
+  id?: string
 ) => {
   const root = "api/shift";
   switch (action) {

@@ -35,7 +35,7 @@ const getFormattedTime = (
   return defaultValue;
 };
 
-const formatDate = (date: string) => {
+const formatDate = (date: string | Date) => {
   const d = new Date(date);
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, "0");
@@ -47,13 +47,7 @@ const formatDate = (date: string) => {
 const defaultFrom = ref(getFormattedTime(props.selectedShift?.start, "09:00"));
 const defaultTo = ref(getFormattedTime(props.selectedShift?.end, "17:00"));
 const defaultDate = ref(
-  formatDate(
-    typeof (props.selectedShift?.start || props.date) === "string"
-      ? ((props.selectedShift?.start || props.date) as string)
-      : (props.selectedShift?.start || props.date) instanceof Date
-      ? ((props.selectedShift?.start || props.date) as Date).toISOString()
-      : ""
-  )
+  formatDate(props.selectedShift?.start || props.date || new Date())
 );
 
 const handleSave = () => {

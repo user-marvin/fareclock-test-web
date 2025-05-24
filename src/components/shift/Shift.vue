@@ -14,7 +14,7 @@ const displayMonthYear = ref(
 
 const shiftRecord = ref<ShiftRecord[]>([]);
 
-const handleSave = (params: { start: string; end: string }, id?: number) => {
+const handleSave = (params: { start: string; end: string }, id?: string) => {
   const saveShift = async () => {
     try {
       let response: any = {};
@@ -57,7 +57,7 @@ const getShift = async () => {
   }
 };
 
-const deleteShift = async (id: number) => {
+const deleteShift = async (id: string) => {
   try {
     const response = await shift("DELETE", {}, id);
     if (response && response.status >= 200 && response.status < 300) {
