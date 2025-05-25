@@ -36,9 +36,19 @@ const handleSave = () => {
 
   const saveTimezone = async () => {
     try {
+      Swal.fire({
+        title: "Updating shifts...",
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
       const response = await timezone("PUT", {
         timezone: defaultTimezone.value,
       });
+
+      Swal.close();
       if (response && response.status === 200) {
         Swal.fire({
           title: `Timezone saved successfully: ${response.data}`,

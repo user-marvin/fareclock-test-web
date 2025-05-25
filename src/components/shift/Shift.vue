@@ -17,12 +17,24 @@ const shiftRecord = ref<ShiftRecord[]>([]);
 const handleSave = (params: { start: string; end: string }, id?: string) => {
   const saveShift = async () => {
     try {
+      Swal.fire({
+        title: id ? "Updating shift..." : "Saving shift...",
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
       let response: any = {};
       if (id) {
         response = await shift("PUT", params, id);
       } else {
         response = await shift("POST", params);
       }
+
+      Swal.close();
+
       if (response && response.status >= 200 && response.status < 300) {
         Swal.fire({
           title: `Shift ${id ? "updated" : "saved"} successfully`,
@@ -32,8 +44,9 @@ const handleSave = (params: { start: string; end: string }, id?: string) => {
         getShift();
       }
     } catch (error: any) {
+      Swal.close(); // hide loading on error
       Swal.fire({
-        title: `Error: ${error.response?.data?.message}`,
+        title: `Error: ${error.response?.data?.message ?? "Unexpected error"}`,
         icon: "error",
         draggable: false,
       });
@@ -59,7 +72,16 @@ const getShift = async () => {
 
 const deleteShift = async (id: string) => {
   try {
+    Swal.fire({
+      title: "Deleting shifts...",
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
     const response = await shift("DELETE", {}, id);
+    Swal.close();
     if (response && response.status >= 200 && response.status < 300) {
       Swal.fire({
         title: `Shift deleted successfully`,

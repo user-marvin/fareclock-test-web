@@ -22,3 +22,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Build output from Vue.js (adjust path if different)
+# The 'N' in farelock-frontend/N suggests a build output directory
+farelock-frontend/N/
+
+# Firebase cache files
+.firebase/*.cache
+.firebase/hosting.*.cache
+
+# Local environment variables
+.env
+
