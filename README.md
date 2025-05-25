@@ -1,5 +1,32 @@
-# Vue 3 + TypeScript + Vite
+# Fareclock Frontend
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+This is the frontend application for **Fareclock**, built with [Vue 3](https://vuejs.org/), [TypeScript](https://www.typescriptlang.org/), [Vite](https://vitejs.dev/), and styled using [Tailwind CSS](https://tailwindcss.com/). It includes integration with [Firebase](https://firebase.google.com/) and uses [SweetAlert2](https://sweetalert2.github.io/) for modals.
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+---
+
+## 🚀 Tech Stack
+
+- **Framework**: Vue 3 + Vite
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **HTTP Client**: Axios
+- **Alerts**: SweetAlert2
+- **Testing**: Vitest + Vue Test Utils + jsdom
+- **Firebase**: Client SDK
+- **Type Checking**: vue-tsc
+
+---
+
+## 📦 Installation
+
+```bash
+# Clone the repository
+git clone <your-repo-url>
+cd farelock-frontend
+
+# Install dependencies
+npm install
+
+# Deployment
+# Used firebase hosting to deploy to google cloud connecting to an application deploy to cloud run
+```

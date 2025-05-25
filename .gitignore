@@ -24,8 +24,8 @@ dist-ssr
 *.sw?
 
 # Build output from Vue.js (adjust path if different)
-# The 'N' in farelock-frontend/N suggests a build output directory
-farelock-frontend/N/
+# The 'N' in fareclock-frontend/N suggests a build output directory
+fareclock-frontend/N/
 
 # Firebase cache files
 .firebase/*.cache
