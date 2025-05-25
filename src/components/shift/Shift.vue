@@ -44,7 +44,7 @@ const handleSave = (params: { start: string; end: string }, id?: string) => {
         getShift();
       }
     } catch (error: any) {
-      Swal.close(); // hide loading on error
+      Swal.close();
       Swal.fire({
         title: `Error: ${error.response?.data?.message ?? "Unexpected error"}`,
         icon: "error",

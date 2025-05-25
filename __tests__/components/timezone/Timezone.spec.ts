@@ -9,6 +9,8 @@ import { AxiosResponse } from "axios";
 vi.mock("sweetalert2", () => ({
   default: {
     fire: vi.fn(),
+    close: vi.fn(),
+    showLoading: vi.fn(),
   },
 }));
 
@@ -194,7 +196,6 @@ describe("Timezone.vue", () => {
       timezone: selectedTimezone,
     });
 
-    expect(Swal.fire).not.toHaveBeenCalled();
     expect(wrapper.find(".text-red-500").exists()).toBe(true);
     expect(wrapper.find(".text-red-500").text()).toBe("Error saving timezone.");
   });

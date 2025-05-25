@@ -10,6 +10,8 @@ import { AxiosResponse } from "axios";
 vi.mock("sweetalert2", () => ({
   default: {
     fire: vi.fn(),
+    close: vi.fn(),
+    showLoading: vi.fn(),
   },
 }));
 
