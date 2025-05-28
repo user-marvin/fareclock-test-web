@@ -27,6 +27,10 @@ const timezones = [
 const defaultTimezone = ref("");
 const errorMessage = ref("");
 
+const emit = defineEmits<{
+  (e: "update:modelValue", value: boolean): void;
+}>();
+
 const handleSave = () => {
   if (!defaultTimezone.value) {
     errorMessage.value = "Please select a timezone.";
@@ -55,6 +59,7 @@ const handleSave = () => {
           icon: "success",
           draggable: false,
         });
+        emit("update:modelValue", true);
       }
     } catch (error) {
       errorMessage.value = "Error saving timezone.";

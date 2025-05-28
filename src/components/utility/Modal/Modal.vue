@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { ShiftRecord } from "../../../types/types";
+import { DateTime } from "luxon";
 
 const props = defineProps({
   selectedShift: {
@@ -29,8 +30,10 @@ const getFormattedTime = (
   defaultValue: string
 ): string => {
   if (isoString) {
-    const timezoneOffSet = new Date(isoString);
-    return timezoneOffSet.toTimeString().split(" ")[0];
+    const formatTime = DateTime.fromISO(isoString, { setZone: true }).toFormat(
+      "HH:mm"
+    );
+    return formatTime;
   }
   return defaultValue;
 };

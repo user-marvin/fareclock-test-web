@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Table from "../utility/Table.vue";
 import Timezone from "../timezone/Timezone.vue";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import Swal from "sweetalert2";
 import type { ShiftRecord } from "../../types/types";
 import { shift } from "../../server/request";
@@ -13,6 +13,7 @@ const displayMonthYear = ref(
 );
 
 const shiftRecord = ref<ShiftRecord[]>([]);
+const updateShift = ref<Boolean>(false);
 
 const handleSave = (params: { start: string; end: string }, id?: string) => {
   const saveShift = async () => {
@@ -103,6 +104,17 @@ onMounted(() => {
   getShift();
 });
 
+watch(
+  () => updateShift.value,
+  (newVal) => {
+    console.log(newVal);
+    if (newVal) {
+      getShift();
+      updateShift.value = false;
+    }
+  }
+);
+
 defineExpose({
   displayMonthYear,
   shiftRecord,
@@ -114,7 +126,7 @@ defineExpose({
 <template>
   <div>
     <div class="flex mx-auto justify-between items-center mb-4">
-      <Timezone />
+      <Timezone v-model="updateShift" />
       <h1 class="text-2xl font-bold">{{ displayMonthYear }}</h1>
     </div>
     <Table

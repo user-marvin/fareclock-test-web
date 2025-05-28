@@ -213,20 +213,9 @@ watch(
         ]"
       >
         <div class="font-bold">{{ day.date.getDate() }}</div>
-        <div
-          v-if="
-            shiftRecord &&
-            shiftRecord.some(
-              (record) =>
-                new Date(record.start).getFullYear() ===
-                  day.date.getFullYear() &&
-                new Date(record.start).getMonth() === day.date.getMonth() &&
-                new Date(record.start).getDate() === day.date.getDate()
-            )
-          "
-        >
+        <div>
           <div
-            v-for="record in shiftRecord
+            v-for="record in (shiftRecord || [])
               .filter(
                 (record) =>
                   new Date(record.start).getFullYear() ===
@@ -241,13 +230,13 @@ watch(
           >
             Marvin Villamar - {{ `[${record.duration}hrs]` }}
           </div>
-        </div>
-        <div
-          v-else
-          @click="() => createEntry(day.date)"
-          class="new-attendance border border-gray-400 text-sm cursor-pointer mt-2 text-center py-1 rounded hover:bg-blue-100"
-        >
-          New Attendance
+
+          <div
+            @click="() => createEntry(day.date)"
+            class="new-attendance border border-gray-400 text-sm cursor-pointer mt-2 text-center py-1 rounded hover:bg-blue-100"
+          >
+            New Attendance
+          </div>
         </div>
       </div>
     </div>
