@@ -3,41 +3,14 @@ import { onMounted, ref } from "vue";
 import Dropdown from "../utility/Dropdown.vue";
 import { timezone } from "../../server/request";
 import Swal from "sweetalert2";
-const timezones = [
-  "Asia/Manila",
-  "America/New_York",
-  "America/Los_Angeles",
-  "America/Chicago",
-  "America/Denver",
-  "Europe/London",
-  "Europe/Paris",
-  "Europe/Berlin",
-  "Asia/Tokyo",
-  "Asia/Seoul",
-  "Asia/Shanghai",
-  "Asia/Singapore",
-  "Asia/Hong_Kong",
-  "Australia/Sydney",
-  "Australia/Melbourne",
-  "Asia/Dubai",
-  "Europe/Moscow",
-  "America/Sao_Paulo",
-];
+import { timezones } from "../../constant/constant";
 
-const defaultTimezone = ref("");
-const errorMessage = ref("");
-
+const defaultTimezone = ref<string>("");
 const emit = defineEmits<{
   (e: "update:modelValue", value: boolean): void;
+  (e: "update:timezone", value: string): void;
 }>();
-
 const handleSave = () => {
-  if (!defaultTimezone.value) {
-    errorMessage.value = "Please select a timezone.";
-    return;
-  }
-  errorMessage.value = "";
-
   const saveTimezone = async () => {
     try {
       Swal.fire({
@@ -59,24 +32,33 @@ const handleSave = () => {
           icon: "success",
           draggable: false,
         });
+        emit("update:timezone", response.data);
         emit("update:modelValue", true);
       }
-    } catch (error) {
-      errorMessage.value = "Error saving timezone.";
+    } catch (error: any) {
+      Swal.fire({
+        title: `Error: ${error.response?.data?.message}`,
+        icon: "error",
+        draggable: false,
+      });
     }
   };
   saveTimezone();
 };
-
 onMounted(() => {
   const getTimezone = async () => {
     try {
       const response = await timezone("GET");
       if (response && response.status === 200) {
         defaultTimezone.value = response.data;
+        emit("update:timezone", defaultTimezone.value);
       }
-    } catch (error) {
-      console.error("Error fetching timezone:", error);
+    } catch (error: any) {
+      Swal.fire({
+        title: `Error: ${error.response?.data?.message}`,
+        icon: "error",
+        draggable: false,
+      });
     }
   };
 
@@ -84,13 +66,14 @@ onMounted(() => {
 });
 defineExpose({
   defaultTimezone,
-  errorMessage,
 });
 </script>
 
 <template>
-  <div class="flex flex-col">
-    <div class="w-52 flex gap-1 relative">
+  <div
+    class="flex flex-col w-full justify-center items-center sm:w-auto sm:justify-normal sm:items-stretch"
+  >
+    <div class="sm:w-52 flex gap-1 relative">
       <Dropdown
         :data="timezones"
         placeholder="Select Timezone"
@@ -104,11 +87,6 @@ defineExpose({
           Save
         </button>
       </div>
-    </div>
-    <div>
-      <p v-if="errorMessage" class="text-red-500 text-sm mt-2">
-        {{ errorMessage }}
-      </p>
     </div>
   </div>
 </template>

@@ -14,6 +14,7 @@ const displayMonthYear = ref(
 
 const shiftRecord = ref<ShiftRecord[]>([]);
 const updateShift = ref<Boolean>(false);
+const defaultTimezone = ref("");
 
 const handleSave = (params: { start: string; end: string }, id?: string) => {
   const saveShift = async () => {
@@ -126,14 +127,15 @@ defineExpose({
 <template>
   <div>
     <div class="flex mx-auto justify-between items-center mb-4">
-      <Timezone v-model="updateShift" />
-      <h1 class="text-2xl font-bold">{{ displayMonthYear }}</h1>
+      <Timezone v-model="updateShift" v-model:timezone="defaultTimezone" />
+      <h1 class="hidden sm:block text-2xl font-bold">{{ displayMonthYear }}</h1>
     </div>
     <Table
       :saveFunction="handleSave"
       :shiftRecord="shiftRecord"
       v-model="displayMonthYear"
       :deleteShift="deleteShift"
+      :timezone="defaultTimezone"
     />
   </div>
 </template>

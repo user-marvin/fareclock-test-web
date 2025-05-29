@@ -25,6 +25,14 @@ defineProps({
     type: Function,
     required: true,
   },
+  modelValue: {
+    type: String,
+    required: true,
+  },
+  timezone: {
+    type: String,
+    required: true,
+  },
 });
 
 const state = reactive<TableState>({
@@ -160,6 +168,7 @@ watch(
           />
         </svg>
       </button>
+      <h1 class="block sm:hidden text-2xl font-bold">{{ modelValue }}</h1>
 
       <button
         @click="nextMonth"
@@ -181,9 +190,9 @@ watch(
         </svg>
       </button>
     </div>
-    <!-- days -->
+    <!-- headers -->
     <div
-      class="grid grid-cols-7 border border-gray-300 divide-x divide-gray-300"
+      class="hidden md:block md:grid md:grid-cols-7 border md:width-250 border-gray-300 divide-x divide-gray-300"
     >
       <div
         v-for="day in calendarData.days"
@@ -193,9 +202,9 @@ watch(
         {{ day }}
       </div>
     </div>
-
+    <!-- days -->
     <div
-      class="grid grid-cols-7 border border-t-0 border-gray-300 divide-x divide-y divide-gray-300"
+      class="md:grid md:grid-cols-7 border md:border-t-0 border-gray-300 divide-x divide-y divide-gray-300"
     >
       <div
         v-for="(day, index) in state.calendarDays"
@@ -213,7 +222,13 @@ watch(
         ]"
       >
         <div class="font-bold">{{ day.date.getDate() }}</div>
-        <div>
+        <div class="lg:h-30 overflow-x-auto hide-scrollbar">
+          <div
+            @click="() => createEntry(day.date)"
+            class="new-attendance border border-gray-400 text-sm cursor-pointer mt-2 text-center py-2 md:py-1 rounded hover:bg-blue-100"
+          >
+            New Attendance
+          </div>
           <div
             v-for="record in (shiftRecord || [])
               .filter(
@@ -226,16 +241,9 @@ watch(
               .slice(0, 1)"
             :key="record.id"
             @click="() => createEntry(day.date, record)"
-            class="named-attendance border border-gray-400 text-sm cursor-pointer mt-2 text-center py-1 rounded hover:bg-blue-100"
+            class="named-attendance border border-gray-400 text-sm cursor-pointer mt-2 text-center py-2 md:py-1 rounded hover:bg-blue-100"
           >
             Marvin Villamar - {{ `[${record.duration}hrs]` }}
-          </div>
-
-          <div
-            @click="() => createEntry(day.date)"
-            class="new-attendance border border-gray-400 text-sm cursor-pointer mt-2 text-center py-1 rounded hover:bg-blue-100"
-          >
-            New Attendance
           </div>
         </div>
       </div>
@@ -252,6 +260,7 @@ watch(
       :closeModal="createEntry"
       :saveFunction="saveFunction"
       :deleteShift="deleteShift"
+      :timezone="timezone"
     />
   </div>
 </template>
