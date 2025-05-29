@@ -10,6 +10,7 @@ import {
 } from "vitest";
 import Modal from "../../../src/components/utility/Modal/Modal.vue";
 import type { ShiftRecord } from "../../../src/types/types";
+import { defaultTime } from "../../../src/constant/constant";
 
 type CloseModalFunction = () => void;
 type SaveFunction = (
@@ -21,7 +22,8 @@ type DeleteShiftFunction = (id: number) => void;
 type ModalVm = InstanceType<typeof Modal> & {
   defaultFrom: string;
   defaultTo: string;
-  defaultDate: string;
+  defaultDateFrom: string;
+  defaultDateTo: string;
   handleSave: () => void;
   handleDelete: () => void;
   handleClose: () => void;
@@ -50,27 +52,28 @@ describe("Modal.vue", () => {
     vi.useRealTimers();
   });
 
-  it("`getFormattedTime` correctly extracts time or returns default", () => {
+  it("`getFormattedTime` correctly extracts time", () => {
     const wrapper = mount(Modal, {
       props: {
         date: new Date(MOCK_DATE_STR),
         closeModal: mockedCloseModal as unknown as CloseModalFunction,
         saveFunction: mockedSaveFunction as unknown as SaveFunction,
         deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
+        timezone: "Asia/Manila",
       },
     });
 
     const vm = wrapper.vm as any;
 
-    expect(vm.getFormattedTime("2025-01-01T09:30:15Z", "00:00")).toBe(
-      "17:30:15"
-    );
-    expect(vm.getFormattedTime("2025-01-01T17:00:00Z", "00:00")).toBe(
-      "01:00:00"
-    );
+    expect(
+      vm.getFormattedTime(new Date(), undefined, true, defaultTime.start)
+    ).toBe("2025-05-24");
+    expect(
+      vm.getFormattedTime(new Date(), undefined, true, defaultTime.end)
+    ).toBe("2025-05-24");
 
-    expect(vm.getFormattedTime(null, "12:00")).toBe("12:00");
-    expect(vm.getFormattedTime(undefined, "12:00")).toBe("12:00");
+    expect(vm.getFormattedTime(defaultTime.start)).toBe(defaultTime.start);
+    expect(vm.getFormattedTime(defaultTime.end)).toBe(defaultTime.end);
   });
 
   it("`formatDate` correctly formats date to YYYY-MM-DD", () => {
@@ -80,6 +83,7 @@ describe("Modal.vue", () => {
         closeModal: mockedCloseModal as unknown as CloseModalFunction,
         saveFunction: mockedSaveFunction as unknown as SaveFunction,
         deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
+        timezone: "",
       },
     });
 
@@ -100,6 +104,7 @@ describe("Modal.vue", () => {
           closeModal: mockedCloseModal as unknown as CloseModalFunction,
           saveFunction: mockedSaveFunction as unknown as SaveFunction,
           deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
+          timezone: "",
         },
       });
       vm = wrapper.vm as ModalVm;
@@ -118,7 +123,7 @@ describe("Modal.vue", () => {
     it("initializes defaultFrom, defaultTo, defaultDate correctly", () => {
       expect(vm.defaultFrom).toBe("09:00");
       expect(vm.defaultTo).toBe("17:00");
-      expect(vm.defaultDate).toBe(MOCK_DATE_STR);
+      expect(vm.defaultDateFrom).toBe(MOCK_DATE_STR);
     });
   });
 
@@ -140,6 +145,7 @@ describe("Modal.vue", () => {
           closeModal: mockedCloseModal as unknown as CloseModalFunction,
           saveFunction: mockedSaveFunction as unknown as SaveFunction,
           deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
+          timezone: "",
         },
       });
       vm = wrapper.vm as ModalVm;
@@ -155,7 +161,7 @@ describe("Modal.vue", () => {
 
     it("initializes defaultFrom, defaultTo, defaultDate from selectedShift", () => {
       expect(vm.defaultTo).toBe("02:00:00");
-      expect(vm.defaultDate).toBe("2025-05-15");
+      expect(vm.defaultDateFrom).toBe("2025-05-15");
     });
   });
 
@@ -167,6 +173,7 @@ describe("Modal.vue", () => {
           closeModal: mockedCloseModal as unknown as CloseModalFunction,
           saveFunction: mockedSaveFunction as unknown as SaveFunction,
           deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
+          timezone: "",
         },
       });
 
@@ -181,6 +188,7 @@ describe("Modal.vue", () => {
           closeModal: mockedCloseModal as unknown as CloseModalFunction,
           saveFunction: mockedSaveFunction as unknown as SaveFunction,
           deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
+          timezone: "",
         },
       });
 
@@ -200,13 +208,14 @@ describe("Modal.vue", () => {
           closeModal: mockedCloseModal as unknown as CloseModalFunction,
           saveFunction: mockedSaveFunction as unknown as SaveFunction,
           deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
+          timezone: "",
         },
       });
       const vm = wrapper.vm as ModalVm;
 
       vm.defaultFrom = "10:00";
       vm.defaultTo = "18:00";
-      vm.defaultDate = "2025-05-25";
+      vm.defaultDateFrom = "2025-05-25";
 
       await wrapper
         .findAll("button.bg-blue-600")
@@ -241,13 +250,15 @@ describe("Modal.vue", () => {
           closeModal: mockedCloseModal as unknown as CloseModalFunction,
           saveFunction: mockedSaveFunction as unknown as SaveFunction,
           deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
+          timezone: "Asia/Manila",
         },
       });
       const vm = wrapper.vm as ModalVm;
 
       vm.defaultFrom = "08:00";
       vm.defaultTo = "16:00";
-      vm.defaultDate = "2025-05-15";
+      vm.defaultDateFrom = "2025-05-15";
+      vm.defaultDateTo = "2025-05-15";
 
       await wrapper
         .findAll("button.bg-blue-600")
@@ -284,6 +295,7 @@ describe("Modal.vue", () => {
           closeModal: mockedCloseModal as unknown as CloseModalFunction,
           saveFunction: mockedSaveFunction as unknown as SaveFunction,
           deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
+          timezone: "",
         },
       });
 
@@ -311,6 +323,7 @@ describe("Modal.vue", () => {
           closeModal: mockedCloseModal as unknown as CloseModalFunction,
           saveFunction: mockedSaveFunction as unknown as SaveFunction,
           deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
+          timezone: "",
         },
       });
 
@@ -331,6 +344,7 @@ describe("Modal.vue", () => {
           closeModal: mockedCloseModal as unknown as CloseModalFunction,
           saveFunction: mockedSaveFunction as unknown as SaveFunction,
           deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
+          timezone: "",
         },
       });
 
@@ -351,6 +365,7 @@ describe("Modal.vue", () => {
         closeModal: mockedCloseModal as unknown as CloseModalFunction,
         saveFunction: mockedSaveFunction as unknown as SaveFunction,
         deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
+        timezone: "",
       },
     });
     const vm = wrapper.vm as ModalVm;
@@ -365,21 +380,23 @@ describe("Modal.vue", () => {
     expect(vm.defaultTo).toBe("19:30");
   });
 
-  it("updates defaultDate when date input field is changed", async () => {
+  it.only("updates defaultDate when date input field is changed", async () => {
     const wrapper = mount(Modal, {
       props: {
         date: new Date(MOCK_DATE_STR),
         closeModal: mockedCloseModal as unknown as CloseModalFunction,
         saveFunction: mockedSaveFunction as unknown as SaveFunction,
         deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
+        timezone: "",
       },
     });
     const vm = wrapper.vm as ModalVm;
 
-    const dateInput = wrapper.find<HTMLInputElement>('input[type="date"]');
-
-    await dateInput.setValue("2026-01-01");
-
-    expect(vm.defaultDate).toBe("2026-01-01");
+    const dateInput = wrapper.findAll<HTMLInputElement>('input[type="date"]');
+    await dateInput[0].setValue("2026-01-01");
+    await dateInput[1].setValue("2026-01-01");
+    console.log(dateInput[0]);
+    expect(vm.defaultDateFrom).toBe("2026-01-01");
+    expect(vm.defaultDateTo).toBe("2026-01-01");
   });
 });

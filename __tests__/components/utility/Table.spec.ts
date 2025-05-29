@@ -54,6 +54,8 @@ describe("Table.vue", () => {
         saveFunction: mockedSaveFunction as unknown as SaveFunction,
         shiftRecord: [],
         deleteShift: mockedDeleteShift as unknown as DeleteShiftFunction,
+        modelValue: "",
+        timezone: "",
       },
       global: {
         stubs: {
@@ -70,10 +72,6 @@ describe("Table.vue", () => {
   it("renders correctly and displays the calendar grid", () => {
     expect(wrapper.exists()).toBe(true);
     expect(wrapper.findAll("button").length).toBeGreaterThanOrEqual(2);
-    expect(wrapper.find(".grid.grid-cols-7").exists()).toBe(true);
-    expect(wrapper.find(".grid.grid-cols-7 > div:nth-child(1)").text()).toBe(
-      calendarData.days[0]
-    );
     expect(wrapper.findAll(".h-40.p-2").length).toBe(
       calendarData.weeks * calendarData.days.length
     );

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { reactive, watch } from "vue";
+import { DateTime } from "luxon";
 import Modal from "./Modal/Modal.vue";
 import type { ShiftRecord } from "../../types/types";
 import { calendarData } from "../../constant/constant";
@@ -12,7 +13,7 @@ interface TableState {
   selectedShift: ShiftRecord | null;
 }
 
-defineProps({
+const props = defineProps({
   saveFunction: {
     type: Function,
     required: true,
@@ -231,13 +232,22 @@ watch(
           </div>
           <div
             v-for="record in (shiftRecord || [])
-              .filter(
-                (record) =>
-                  new Date(record.start).getFullYear() ===
-                    day.date.getFullYear() &&
-                  new Date(record.start).getMonth() === day.date.getMonth() &&
-                  new Date(record.start).getDate() === day.date.getDate()
-              )
+              .filter((record) => {
+                const startDate = DateTime.fromISO(record.start, {
+                  zone: timezone,
+                }).startOf('day');
+
+                const dayDate = DateTime.fromObject(
+                  {
+                    year: day.date.getFullYear(),
+                    month: day.date.getMonth() + 1,
+                    day: day.date.getDate(),
+                  },
+                  { zone: timezone }
+                ).startOf('day');
+
+                return startDate.toISODate() === dayDate.toISODate();
+              })
               .slice(0, 1)"
             :key="record.id"
             @click="() => createEntry(day.date, record)"

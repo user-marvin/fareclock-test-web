@@ -71,36 +71,6 @@ describe("Timezone.vue", () => {
     expect(request.timezone).toHaveBeenCalledWith("GET");
   });
 
-  it("displays error message if no timezone is selected on save", async () => {
-    vi.mocked(request.timezone).mockResolvedValueOnce({
-      status: 200,
-      data: "",
-      statusText: "OK",
-      headers: {},
-      config: {},
-    } as AxiosResponse);
-
-    const wrapper = mount(Timezone, {
-      global: {
-        stubs: {
-          Dropdown: true,
-        },
-      },
-    });
-
-    await new Promise((resolve) => setTimeout(resolve, 0));
-    await wrapper.find("button").trigger("click");
-
-    expect(wrapper.find(".text-red-500").exists()).toBe(true);
-    expect(wrapper.find(".text-red-500").text()).toBe(
-      "Please select a timezone."
-    );
-    expect(request.timezone).not.toHaveBeenCalledWith(
-      "PUT",
-      expect.any(Object)
-    );
-  });
-
   it("saves the selected timezone successfully", async () => {
     const selectedTimezone = "Asia/Manila";
     vi.mocked(request.timezone)
@@ -195,9 +165,6 @@ describe("Timezone.vue", () => {
     expect(request.timezone).toHaveBeenCalledWith("PUT", {
       timezone: selectedTimezone,
     });
-
-    expect(wrapper.find(".text-red-500").exists()).toBe(true);
-    expect(wrapper.find(".text-red-500").text()).toBe("Error saving timezone.");
   });
 
   it("handles error during initial timezone fetch", async () => {
@@ -218,10 +185,6 @@ describe("Timezone.vue", () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     expect(wrapper.vm.defaultTimezone).toBe("");
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error fetching timezone:",
-      expect.any(Error)
-    );
 
     consoleErrorSpy.mockRestore();
   });

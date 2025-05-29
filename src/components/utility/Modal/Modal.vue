@@ -68,8 +68,6 @@ const getFormattedTime = (
         .toFormat("HH:mm");
     }
   }
-
-  return "timezoneBasedTime";
 };
 
 const getTimeZoneTime = (time: string) => {
@@ -94,16 +92,16 @@ const state = ref<State>({
 });
 
 const handleSave = () => {
-  const fromDate = new Date(
-    `${state.value.defaultDateFrom}T${state.value.defaultFrom}`
-  );
-  const toDate = new Date(
-    `${state.value.defaultDateTo}T${state.value.defaultTo}`
-  );
+  const fromDateTimeString = `${state.value.defaultDateFrom}T${state.value.defaultFrom}`;
+  const toDateTimeString = `${state.value.defaultDateTo}T${state.value.defaultTo}`;
+
   const params = {
-    start: fromDate.toISOString(),
-    end: toDate.toISOString(),
+    start: DateTime.fromISO(fromDateTimeString, {
+      zone: props.timezone,
+    }).toISO(),
+    end: DateTime.fromISO(toDateTimeString, { zone: props.timezone }).toISO(),
   };
+  console.log(params);
   props.saveFunction(params, props.selectedShift?.id);
   props.closeModal();
 };
