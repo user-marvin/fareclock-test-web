@@ -210,7 +210,7 @@ watch(
       <div
         v-for="(day, index) in state.calendarDays"
         :key="index"
-        class="h-40 p-2"
+        class="min-h-40 lg:h-40 p-2"
         :class="[
           isToday(day.date)
             ? 'bg-blue-100'
@@ -223,7 +223,7 @@ watch(
         ]"
       >
         <div class="font-bold">{{ day.date.getDate() }}</div>
-        <div class="lg:h-30 overflow-y-auto hide-scrollbar">
+        <div class="lg:h-30 lg:overflow-y-auto hide-scrollbar">
           <div
             @click="() => createEntry(day.date)"
             class="new-attendance border border-gray-400 text-sm cursor-pointer mt-2 text-center py-2 md:py-1 rounded hover:bg-blue-100"
