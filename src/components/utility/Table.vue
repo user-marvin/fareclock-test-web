@@ -13,7 +13,7 @@ interface TableState {
   selectedShift: ShiftRecord | null;
 }
 
-const props = defineProps({
+defineProps({
   saveFunction: {
     type: Function,
     required: true,
@@ -223,7 +223,7 @@ watch(
         ]"
       >
         <div class="font-bold">{{ day.date.getDate() }}</div>
-        <div class="lg:h-30 overflow-x-auto hide-scrollbar">
+        <div class="lg:h-30 overflow-y-auto hide-scrollbar">
           <div
             @click="() => createEntry(day.date)"
             class="new-attendance border border-gray-400 text-sm cursor-pointer mt-2 text-center py-2 md:py-1 rounded hover:bg-blue-100"
@@ -231,24 +231,22 @@ watch(
             New Attendance
           </div>
           <div
-            v-for="record in (shiftRecord || [])
-              .filter((record) => {
-                const startDate = DateTime.fromISO(record.start, {
-                  zone: timezone,
-                }).startOf('day');
+            v-for="record in (shiftRecord || []).filter((record) => {
+              const startDate = DateTime.fromISO(record.start, {
+                zone: timezone,
+              }).startOf('day');
 
-                const dayDate = DateTime.fromObject(
-                  {
-                    year: day.date.getFullYear(),
-                    month: day.date.getMonth() + 1,
-                    day: day.date.getDate(),
-                  },
-                  { zone: timezone }
-                ).startOf('day');
+              const dayDate = DateTime.fromObject(
+                {
+                  year: day.date.getFullYear(),
+                  month: day.date.getMonth() + 1,
+                  day: day.date.getDate(),
+                },
+                { zone: timezone }
+              ).startOf('day');
 
-                return startDate.toISODate() === dayDate.toISODate();
-              })
-              .slice(0, 1)"
+              return startDate.toISODate() === dayDate.toISODate();
+            })"
             :key="record.id"
             @click="() => createEntry(day.date, record)"
             class="named-attendance border border-gray-400 text-sm cursor-pointer mt-2 text-center py-2 md:py-1 rounded hover:bg-blue-100"

@@ -63,7 +63,11 @@ const getFormattedTime = (
         .setZone()
         .toFormat("yyyy-MM-dd");
     } else {
-      return DateTime.fromISO(defaultDateTime, { zone: props.timezone })
+      const dateTimeString =
+        typeof defaultDateTime === "string"
+          ? defaultDateTime
+          : defaultDateTime.toISOString();
+      return DateTime.fromISO(dateTimeString, { zone: props.timezone })
         .setZone()
         .toFormat("HH:mm");
     }

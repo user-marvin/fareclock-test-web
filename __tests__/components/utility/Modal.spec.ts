@@ -395,7 +395,6 @@ describe("Modal.vue", () => {
     const dateInput = wrapper.findAll<HTMLInputElement>('input[type="date"]');
     await dateInput[0].setValue("2026-01-01");
     await dateInput[1].setValue("2026-01-01");
-    console.log(dateInput[0]);
     expect(vm.defaultDateFrom).toBe("2026-01-01");
     expect(vm.defaultDateTo).toBe("2026-01-01");
   });
